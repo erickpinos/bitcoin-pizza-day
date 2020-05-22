@@ -1,10 +1,8 @@
-import { client } from 'ontology-dapi';
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { hexstr2str } from './utils';
-
-client.registerClient({});
+import { getTotalSupply, smartContractRead, queryTokenByID } from './utils/ontology';
+import { hexstr2str } from './utils/utils';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -18,40 +16,22 @@ export default class App extends React.Component {
   }
 
   async componentDidMount() {
-    const name = await this.smartContractRead('name');
-    const totalSupplyHex = await this.getTotalSupply();
+    const name = await smartContractRead('name');
+    const totalSupplyHex = await getTotalSupply();
     const totalSupply = parseInt(totalSupplyHex, 16);
+    const token = await queryTokenByID();
+    const tokenID = token[0];
+    const tokenName = hexstr2str(token[1]);
+    const tokenURL = hexstr2str(token[2]);
+    const tokenType = hexstr2str(token[3]);
     this.setState({
       title: name,
-      totalSupply: totalSupply
+      totalSupply: totalSupply,
+      tokenID: tokenID,
+      tokenName: tokenName,
+      tokenURL: tokenURL,
+      tokenType: tokenType
     })
-  }
-
-  async smartContractRead(operation) {
-    const scriptHash = '1da6f6ffd2811a73eed8acb624210d2a4682d6d1';
-
-    try {
-      const result = await client.api.smartContract.invokeRead({ scriptHash, operation });
-      console.log('onScCallRead finished, result:' + hexstr2str(result));
-      return hexstr2str(result);
-    } catch (e) {
-      alert('onScCallRead canceled');
-      console.log('onScCallRead error:', e);
-    }
-  }
-
-  async getTotalSupply() {
-    const scriptHash = '1da6f6ffd2811a73eed8acb624210d2a4682d6d1';
-    const operation = 'totalSupply';
-
-    try {
-      const result = await client.api.smartContract.invokeRead({ scriptHash, operation });
-      console.log('onScCallRead finished, result:' + result);
-      return result;
-    } catch (e) {
-      alert('onScCallRead canceled');
-      console.log('onScCallRead error:', e);
-    }
   }
 
   render() {
@@ -61,14 +41,10 @@ export default class App extends React.Component {
           <img src={logo} className="App-logo" alt="logo" />
           <p>{this.state.title}</p>
           <p>{this.state.totalSupply} total pizzas</p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <p>{this.state.tokenID}</p>
+          <p>{this.state.tokenName}</p>
+          <p>{this.state.tokenURL}</p>
+          <p>{this.state.tokenType}</p>
         </header>
       </div>
     );
