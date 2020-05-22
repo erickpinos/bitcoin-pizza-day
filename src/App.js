@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { getTotalSupply, smartContractRead, queryTokenByID } from './utils/ontology';
 import { hexstr2str } from './utils/utils';
+import Pizza from './components/Pizza';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -10,7 +11,8 @@ export default class App extends React.Component {
 
     this.state = {
       title: '',
-      totalSupply: ''
+      totalSupply: '',
+      pizzas: []
     }
 
   }
@@ -20,6 +22,7 @@ export default class App extends React.Component {
     const totalSupplyHex = await getTotalSupply();
     const totalSupply = parseInt(totalSupplyHex, 16);
     const token = await queryTokenByID();
+    const pizzas = [token];
     const tokenID = token[0];
     const tokenName = hexstr2str(token[1]);
     const tokenURL = hexstr2str(token[2]);
@@ -27,6 +30,7 @@ export default class App extends React.Component {
     this.setState({
       title: name,
       totalSupply: totalSupply,
+      pizzas: pizzas,
       tokenID: tokenID,
       tokenName: tokenName,
       tokenURL: tokenURL,
@@ -41,11 +45,8 @@ export default class App extends React.Component {
           <img src={logo} className="App-logo" alt="logo" />
           <p>{this.state.title}</p>
           <p>{this.state.totalSupply} total pizzas</p>
-          <p>{this.state.tokenID}</p>
-          <p>{this.state.tokenName}</p>
-          <p>{this.state.tokenURL}</p>
-          <p>{this.state.tokenType}</p>
         </header>
+        <div>{this.state.pizzas.map((currElement, index) => <Pizza key={index} element={currElement} />)}</div>
       </div>
     );
   }

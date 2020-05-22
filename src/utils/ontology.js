@@ -1,4 +1,4 @@
-import { client, ParameterType } from 'ontology-dapi';
+import { client } from 'ontology-dapi';
 import { hexstr2str } from './utils';
 
 client.registerClient({});
