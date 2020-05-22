@@ -20,11 +20,13 @@ export default class Pizza extends React.Component {
 
   render() {
     return(
-      <div>
-        <div>{this.state.id}</div>
-        <div>{this.state.name}</div>
-        <div>{this.state.url}</div>
-        <div>{this.state.type}</div>
+      <div className="col-3">
+        <div className="card">
+          <div>{this.state.id}</div>
+          <div>{this.state.name}</div>
+          <div>{this.state.url}</div>
+          <div>{this.state.type}</div>
+        </div>
       </div>
     );
   }
